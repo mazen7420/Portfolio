@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mazen Ashraf — Flutter Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0F14;
+    --surface: #10161D;
+    --surface-2: #151D26;
+    --line: #212B35;
+    --text: #E7EDF3;
+    --muted: #8A98A6;
+    --blue: #1E88F0;
+    --cyan: #4FD6E8;
+    --blue-dim: #123253;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--blue);color:#fff;}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(11,15,20,0.75);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:1080px;margin:0 auto;padding:18px 32px;display:flex;justify-content:space-between;align-items:center;}
+  .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:8px;}
+  .logo .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+  .nav-links{display:flex;gap:32px;font-size:0.92rem;color:var(--muted);}
+  .nav-links a{position:relative;padding:4px 0;transition:color .25s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--text);}
+  .nav-links a.active::after{
+    content:'';position:absolute;left:0;right:0;bottom:-6px;height:2px;
+    background:linear-gradient(90deg,var(--blue),var(--cyan));
+  }
+  .nav-cta{
+    font-size:0.85rem;padding:9px 18px;border-radius:8px;
+    background:linear-gradient(135deg,var(--blue),var(--cyan));
+    color:#04121F;font-weight:600;
+  }
+  @media(max-width:720px){.nav-links{display:none;}}
+
+  /* HERO */
+  .hero{
+    padding:170px 0 110px;
+    display:grid;grid-template-columns:1.15fr 0.85fr;gap:40px;align-items:center;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--cyan);
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;opacity:0;
+    animation:riseIn .7s ease forwards;
+  }
+  .kicker .cursor{width:8px;height:16px;background:var(--cyan);display:inline-block;animation:blink 1s step-end infinite;}
+  .hero h1{
+    font-size:clamp(2.4rem,5vw,3.6rem);
+    font-weight:700;line-height:1.08;letter-spacing:-0.02em;
+    opacity:0;animation:riseIn .7s ease .12s forwards;
+  }
+  .hero h1 span{
+    background:linear-gradient(120deg,var(--blue),var(--cyan));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .role-line{
+    margin-top:18px;font-size:1.15rem;color:var(--muted);
+    font-family:'Space Grotesk',sans-serif;
+    opacity:0;animation:riseIn .7s ease .24s forwards;
+    min-height:28px;
+  }
+  #roleType{color:var(--text);border-right:2px solid var(--cyan);padding-right:3px;}
+  .hero p.lede{
+    margin-top:20px;max-width:52ch;color:var(--muted);font-size:1rem;
+    opacity:0;animation:riseIn .7s ease .36s forwards;
+  }
+  .hero-actions{margin-top:34px;display:flex;gap:14px;opacity:0;animation:riseIn .7s ease .48s forwards;}
+  .btn{
+    padding:13px 24px;border-radius:9px;font-size:0.92rem;font-weight:600;
+    display:inline-flex;align-items:center;gap:8px;transition:transform .2s, box-shadow .2s;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#04121F;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(30,136,240,0.55);}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  /* Phone mockup */
+  .photo-stage{position:relative;display:flex;justify-content:center;align-items:center;opacity:0;animation:riseIn .8s ease .3s forwards;}
+  .photo-glow{
+    position:absolute;width:280px;height:280px;border-radius:50%;
+    background:radial-gradient(circle,rgba(30,136,240,0.35),transparent 70%);
+    filter:blur(10px);z-index:0;
+  }
+  .photo-frame{
+    position:relative;z-index:1;width:280px;height:340px;border-radius:20px;
+    overflow:hidden;border:1px solid var(--line);
+    box-shadow:0 30px 70px -25px rgba(0,0,0,0.7);
+    transition:transform .4s ease;
+  }
+  .photo-frame:hover{transform:translateY(-6px);}
+  .photo-frame img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05) contrast(1.03);}
+  .photo-frame::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(200deg,rgba(30,136,240,0.18),transparent 45%);
+    pointer-events:none;
+  }
+  .photo-tag{
+    position:absolute;z-index:2;bottom:-16px;left:50%;transform:translateX(-50%);
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:10px 18px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--cyan);
+    white-space:nowrap;box-shadow:0 12px 24px -12px rgba(0,0,0,0.6);
+  }
+
+  @keyframes riseIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes blink{50%{opacity:0;}}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;padding-top:140px;}
+    .photo-stage{order:-1;margin-bottom:34px;}
+    .photo-frame{width:220px;height:270px;}
+    .photo-glow{width:220px;height:220px;}
+  }
+
+  section{padding:100px 0;border-top:1px solid var(--line);}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cyan);margin-bottom:10px;}
+  .sec-title{font-size:clamp(1.7rem,3.4vw,2.3rem);font-weight:700;letter-spacing:-0.01em;max-width:20ch;}
+
+  /* Reveal on scroll - single orchestrated pattern */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:60px;margin-top:44px;align-items:start;}
+  .about-quote{font-size:1.15rem;color:var(--text);border-left:2px solid var(--cyan);padding-left:22px;line-height:1.7;}
+  .edu-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-top:28px;}
+  .edu-card .school{font-weight:600;font-family:'Space Grotesk',sans-serif;}
+  .edu-card .dept{color:var(--muted);font-size:0.9rem;margin-top:4px;}
+  .edu-card .grad{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cyan);}
+
+  .skills-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px;}
+  .skill-row{margin-bottom:18px;}
+  .skill-row:last-child{margin-bottom:0;}
+  .skill-top{display:flex;justify-content:space-between;font-size:0.9rem;margin-bottom:8px;}
+  .skill-top .lvl{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.75rem;}
+  .skill-bar{height:6px;background:var(--surface-2);border-radius:4px;overflow:hidden;border:1px solid var(--line);}
+  .skill-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0%;transition:width 1.1s cubic-bezier(.2,.7,.3,1);}
+
+  /* PROJECT */
+  .project-card{
+    margin-top:44px;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  }
+  .project-top{padding:34px 34px 0;}
+  .project-top-split{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;}
+  .project-top-split > div:first-child{flex:1;}
+  .mini-phone{
+    flex-shrink:0;width:120px;height:246px;border-radius:20px;background:#0B0B0B;
+    border:2px solid var(--line);padding:5px;position:relative;overflow:hidden;
+    box-shadow:0 20px 40px -18px rgba(0,0,0,0.6);
+  }
+  .mini-phone-notch{position:absolute;top:5px;left:50%;transform:translateX(-50%);width:40px;height:9px;background:#0B0B0B;border-radius:6px;z-index:2;}
+  .mini-phone img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block;}
+  @media(max-width:640px){.project-top-split{flex-direction:column;align-items:center;text-align:center;} .mini-phone{margin-top:10px;}}
+  .project-top .tag{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--cyan);}
+  .project-top h3{font-size:1.7rem;margin-top:10px;}
+  .project-top p{color:var(--muted);margin-top:12px;max-width:60ch;}
+  .tech-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .tech-pill{font-size:0.78rem;padding:6px 12px;border-radius:20px;border:1px solid var(--line);color:var(--muted);}
+  .project-links{margin-top:22px;display:flex;gap:14px;}
+
+  .tabs{display:flex;gap:0;margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .tab-btn{
+    flex:1;padding:16px;background:none;border:none;color:var(--muted);font-family:'Inter';font-size:0.92rem;
+    cursor:pointer;border-right:1px solid var(--line);transition:color .2s,background .2s;
+  }
+  .tab-btn:last-child{border-right:none;}
+  .tab-btn.active{color:var(--text);background:var(--surface-2);}
+  .tab-panels{padding:30px 34px;}
+  .tab-panel{display:none;color:var(--muted);line-height:1.7;}
+  .tab-panel.active{display:block;animation:fadeQuick .35s ease;}
+  @keyframes fadeQuick{from{opacity:0;}to{opacity:1;}}
+
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);margin-top:0;}
+  .feature-item{background:var(--surface);padding:22px;font-size:0.88rem;display:flex;align-items:center;gap:10px;}
+  .feature-item .fdot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
+
+  /* SERVICES */
+  .services-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);margin-top:44px;border-radius:14px;overflow:hidden;}
+  .service-item{background:var(--surface);padding:32px;transition:background .25s;}
+  .service-item:hover{background:var(--surface-2);}
+  .service-item h4{font-size:1.05rem;margin-bottom:8px;font-family:'Space Grotesk';}
+  .service-item p{color:var(--muted);font-size:0.9rem;}
+  .service-num{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:0.78rem;margin-bottom:14px;display:block;}
+  @media(max-width:640px){.services-grid,.about-grid{grid-template-columns:1fr;}}
+
+  /* CONTACT */
+  .contact-wrap{margin-top:40px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:50px;}
+  .contact-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:34px;}
+  .contact-row{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);}
+  .contact-row:last-child{border-bottom:none;}
+  .contact-row .label{color:var(--muted);font-size:0.85rem;font-family:'JetBrains Mono',monospace;}
+  .contact-row .val{font-weight:500;}
+  .copy-btn{
+    font-size:0.78rem;padding:6px 12px;border:1px solid var(--line);border-radius:6px;color:var(--muted);
+    cursor:pointer;background:none;transition:all .2s;
+  }
+  .copy-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+  .copy-btn.copied{color:var(--cyan);border-color:var(--cyan);}
+
+  footer{padding:34px 0;text-align:center;color:var(--muted);font-size:0.85rem;border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="dot"></span>Mazen Ashraf</div>
+    <div class="nav-links">
+      <a href="#about" class="nl">About</a>
+      <a href="#work" class="nl">Work</a>
+      <a href="#services" class="nl">Services</a>
+      <a href="#contact" class="nl">Contact</a>
+    </div>
+    <a class="nav-cta" href="#contact">Get In Touch</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div>
+    <div class="kicker">$ flutter run --release<span class="cursor"></span></div>
+    <h1>Building mobile<br>experiences with <span>Flutter.</span></h1>
+    <div class="role-line"><span id="roleType"></span></div>
+    <p class="lede">I'm Mazen Ashraf, a junior Flutter developer based in Alexandria, turning ideas into clean, functional apps — and constantly sharpening my craft in Dart and software design.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://github.com/mazen7420" target="_blank" rel="noopener">View my projects</a>
+      <a class="btn btn-ghost" href="#contact">Contact me</a>
+    </div>
+  </div>
+  <div class="photo-stage">
+    <div class="photo-glow"></div>
+    <div class="photo-frame">
+      <img src="assets/mazen.jpg" alt="Mazen Ashraf">
+    </div>
+    <div class="photo-tag">Alexandria, EG</div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap reveal">
+    <div class="eyebrow">01 / About</div>
+    <h2 class="sec-title">A bit about how I work</h2>
+    <div class="about-grid">
+      <div>
+        <p class="about-quote">I enjoy turning ideas into clean, functional apps while continuously improving my skills in Flutter, Dart, and software development.</p>
+        <div class="edu-card">
+          <div class="school">Alexandria University</div>
+          <div class="dept">Faculty of Science — SIM Department</div>
+          <div class="grad">Expected graduation: 2028</div>
+        </div>
+      </div>
+      <div class="skills-panel">
+        <div class="skill-row">
+          <div class="skill-top"><span>Flutter</span><span class="lvl">core</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-w="88"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span>Dart</span><span class="lvl">core</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-w="85"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span>UI / UX</span><span class="lvl">applied</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-w="75"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span>OOP</span><span class="lvl">applied</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-w="80"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span>Data Structures</span><span class="lvl">growing</span></div>
+          <div class="skill-bar"><div class="skill-fill" data-w="65"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap reveal">
+    <div class="eyebrow">02 / Featured project</div>
+    <h2 class="sec-title">Meal Planner</h2>
+
+    <div class="project-card">
+      <div class="project-top project-top-split">
+        <div>
+          <div class="tag">Flutter · Dart · Mobile App</div>
+          <h3>A complete meal-planning experience</h3>
+          <p>Meal Planner helps users discover meals, explore cuisines and categories, save favorite recipes, and organize their week through a built-in calendar.</p>
+          <div class="tech-row">
+            <span class="tech-pill">Flutter</span>
+            <span class="tech-pill">Dart</span>
+            <span class="tech-pill">Authentication</span>
+            <span class="tech-pill">Calendar</span>
+          </div>
+          <div class="project-links">
+            <a class="btn btn-primary" href="https://github.com/a7med3sfour099/Meal-planning-app/" target="_blank" rel="noopener">View project</a>
+          </div>
+        </div>
+        <div class="mini-phone">
+          <div class="mini-phone-notch"></div>
+          <img src="assets/splash.png" alt="Meal Planner splash screen">
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="challenge">Challenge</button>
+        <button class="tab-btn" data-tab="solution">Solution</button>
+        <button class="tab-btn" data-tab="outcome">Outcome</button>
+      </div>
+      <div class="tab-panels">
+        <div class="tab-panel active" id="challenge">Users need an easy, low-friction way to discover meals and organize what they'll actually cook during the week, instead of losing recipe ideas across screenshots and bookmarks.</div>
+        <div class="tab-panel" id="solution">A mobile app combining meal discovery, search, and favoriting with a calendar view — so planning a week of meals takes minutes, not scattered notes.</div>
+        <div class="tab-panel" id="outcome">A complete meal-planning experience built end-to-end in Flutter, from authentication through daily use.</div>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item"><span class="fdot"></span>User Authentication</div>
+        <div class="feature-item"><span class="fdot"></span>Meal Discovery</div>
+        <div class="feature-item"><span class="fdot"></span>Search & Explore</div>
+        <div class="feature-item"><span class="fdot"></span>Favorite Recipes</div>
+        <div class="feature-item"><span class="fdot"></span>Meal Calendar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap reveal">
+    <div class="eyebrow">03 / Services</div>
+    <h2 class="sec-title">What I can help you build</h2>
+    <div class="services-grid">
+      <div class="service-item">
+        <span class="service-num">01</span>
+        <h4>Flutter App Development</h4>
+        <p>Building modern, functional mobile applications from the ground up using Flutter.</p>
+      </div>
+      <div class="service-item">
+        <span class="service-num">02</span>
+        <h4>Mobile UI/UX Implementation</h4>
+        <p>Turning UI/UX designs into clean, responsive Flutter interfaces.</p>
+      </div>
+      <div class="service-item">
+        <span class="service-num">03</span>
+        <h4>Bug Fixing & Improvements</h4>
+        <p>Fixing Flutter issues and improving app performance and functionality.</p>
+      </div>
+      <div class="service-item">
+        <span class="service-num">04</span>
+        <h4>Responsive App Design</h4>
+        <p>Creating mobile interfaces that adapt smoothly across different screen sizes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap reveal">
+    <div class="eyebrow">04 / Contact</div>
+    <h2 class="sec-title">Let's build something together</h2>
+    <div class="contact-wrap">
+      <p style="color:var(--muted);max-width:42ch;">Have a project idea, an internship, or an opportunity in mind? I'd love to hear about it.</p>
+      <div class="contact-card">
+        <div class="contact-row">
+          <span class="label">EMAIL</span>
+          <span class="val">mazenashraf415@gmail.com</span>
+          <button class="copy-btn" onclick="copyText(this,'mazenashraf415@gmail.com')">Copy</button>
+        </div>
+        <div class="contact-row">
+          <span class="label">LINKEDIN</span>
+          <a class="val" href="https://www.linkedin.com/in/mazen-ashraf-268540268/" target="_blank" rel="noopener">mazen-ashraf</a>
+        </div>
+        <div class="contact-row">
+          <span class="label">GITHUB</span>
+          <a class="val" href="https://github.com/mazen7420" target="_blank" rel="noopener">mazen7420</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Mazen Ashraf — Junior Flutter Developer, Alexandria</footer>
+
+<script>
+  // Rotating role text
+  const roles = ["Junior Flutter Developer.", "Dart enthusiast.", "Mobile UI builder.", "Problem solver."];
+  const roleEl = document.getElementById('roleType');
+  let ri = 0, ci = 0, deleting = false;
+  function typeLoop(){
+    const current = roles[ri];
+    if(!deleting){
+      ci++;
+      roleEl.textContent = current.slice(0,ci);
+      if(ci === current.length){ deleting = true; setTimeout(typeLoop, 1400); return; }
+    } else {
+      ci--;
+      roleEl.textContent = current.slice(0,ci);
+      if(ci === 0){ deleting = false; ri = (ri+1) % roles.length; }
+    }
+    setTimeout(typeLoop, deleting ? 35 : 65);
+  }
+  typeLoop();
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  // Skill bars fill when about section is visible
+  const skillsPanel = document.querySelector('.skills-panel');
+  const skillIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.skill-fill').forEach(f=>{ f.style.width = f.dataset.w + '%'; });
+        skillIO.disconnect();
+      }
+    });
+  }, {threshold:0.3});
+  if(skillsPanel) skillIO.observe(skillsPanel);
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section, header');
+  const navLinks = document.querySelectorAll('.nl');
+  const navIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id = e.target.id;
+        navLinks.forEach(l=>l.classList.remove('active'));
+        const match = document.querySelector('.nl[href="#'+id+'"]');
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {threshold:0.5});
+  sections.forEach(s=>{ if(s.id) navIO.observe(s); });
+
+  // Copy email
+  function copyText(btn, text){
+    navigator.clipboard.writeText(text).then(()=>{
+      const original = btn.textContent;
+      btn.textContent = 'Copied';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = original; btn.classList.remove('copied'); }, 1600);
+    });
+  }
+</script>
+
+</body>
+</html>
